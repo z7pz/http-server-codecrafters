@@ -11,6 +11,9 @@ console.log("Logs from your program will appear here!");
 function textResponse(content: string) {
 	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
+function gzipResponse(content: string) {
+	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: gzip\r\nContent-Length: ${content.length}\r\n\r\n`;
+}
 
 function octetStreamResponse(content: string) {
 	return `HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
@@ -24,7 +27,12 @@ const server = net.createServer((socket) => {
 		const path = rawReq.split(" ")[1];
 		if (path.startsWith("/echo")) {
 			const query = path.split("/")[2];
-			socket.write(textResponse(query));
+			const acceptEncoding = rawReq.split("Accept-Encoding: ")[1].split("\r\n")[0];
+			if(acceptEncoding == 'gzip') {
+				socket.write(gzipResponse(query))
+			} else {
+				socket.write(textResponse(query));
+			}
 		} else if (path.startsWith("/user-agent")) {
 			const userAgent = rawReq.split("User-Agent: ")[1].split("\r\n")[0];
 			socket.write(
