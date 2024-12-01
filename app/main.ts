@@ -2,6 +2,7 @@ import net from "net";
 import fs from "node:fs";
 
 const OK = "HTTP/1.1 200 OK\r\n\r\n";
+const CREATED = "HTTP/1.1 201 Created\r\n\r\n";
 const NOT_FOUND = "HTTP/1.1 404 Not Found\r\n\r\n";
 
 // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -19,6 +20,7 @@ function octetStreamResponse(content: string) {
 const server = net.createServer((socket) => {
 	socket.on("data", (data) => {
 		const rawReq = data.toString();
+		const method = rawReq.split(" ")[0];
 		const path = rawReq.split(" ")[1];
 		if (path.startsWith("/echo")) {
 			const query = path.split("/")[2];
@@ -32,8 +34,15 @@ const server = net.createServer((socket) => {
 			const fileName = path.split("/").slice(2);
 			const dir = process.argv.slice(3).join("/");
 			try {
-				const data = fs.readFileSync(`${dir}/${fileName}`);
-				socket.write(octetStreamResponse(data.toString()));
+				const fullPath = `${dir}/${fileName}`;
+				if (method == "POST") {
+					const body = data.toString().split("\r\n\r\n")[1];
+					fs.writeFileSync(fullPath, body, 'utf8');
+					socket.write(CREATED);
+				} else {
+					const data = fs.readFileSync(`${dir}/${fileName}`);
+					socket.write(octetStreamResponse(data.toString()));
+				}
 			} catch (err) {
 				socket.write(NOT_FOUND);
 			}
