@@ -11,13 +11,15 @@ console.log("Logs from your program will appear here!");
 function textResponse(content: string) {
 	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
-function gzipResponse(content: string) {
-	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: gzip\r\nContent-Length: ${content.length}\r\n\r\n`;
+function econdingResponse(content: string, type: string) {
+	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: type\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
 
 function octetStreamResponse(content: string) {
 	return `HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
+
+const ALLOWED_ENCODING = ["gzip"]
 
 // Uncomment this to pass the first stage
 const server = net.createServer((socket) => {
@@ -27,9 +29,9 @@ const server = net.createServer((socket) => {
 		const path = rawReq.split(" ")[1];
 		if (path.startsWith("/echo")) {
 			const query = path.split("/")[2];
-			const acceptEncoding = rawReq.split("Accept-Encoding: ")[1].split("\r\n")[0];
-			if(acceptEncoding == 'gzip') {
-				socket.write(gzipResponse(query))
+			const acceptEncoding = rawReq.split("Accept-Encoding: ")[1]?.split("\r\n")[0].split(", ").filter(accept => AllowedEncoding.includes(accept));
+			if(acceptEncoding) {
+				socket.write(econdingResponse(query, acceptEncoding))
 			} else {
 				socket.write(textResponse(query));
 			}
