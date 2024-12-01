@@ -32,7 +32,7 @@ const server = net.createServer((socket) => {
 			const fileName = path.split("/").slice(2);
 			const dir = process.argv.slice(2);
 			try {
-				const data = fs.readFileSync(`${dir}/${fileName}`);
+				const data = fs.readFileSync(`${dir.slice(1, dir.length - 1)}/${fileName}`);
 				socket.write(octetStreamResponse(data.toString()));
 			} catch (err) {
 				socket.write(NOT_FOUND);
