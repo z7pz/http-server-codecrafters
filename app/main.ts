@@ -32,7 +32,7 @@ const server = net.createServer((socket) => {
 			const acceptEncoding = rawReq
 				.split("Accept-Encoding: ")[1]
 				?.split("\r\n")[0]
-				?.split(", ") 
+				?.split(", ")  
 				?.filter((accept) => ALLOWED_ENCODING.includes(accept));
 			if (acceptEncoding?.length !== 0) {
 				socket.write(econdingResponse(query, "gzip"));
