@@ -19,7 +19,7 @@ function octetStreamResponse(content: string) {
 	return `HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
 
-const ALLOWED_ENCODING = ["gzip"]
+const ALLOWED_ENCODING = ["gzip"];
 
 // Uncomment this to pass the first stage
 const server = net.createServer((socket) => {
@@ -29,9 +29,13 @@ const server = net.createServer((socket) => {
 		const path = rawReq.split(" ")[1];
 		if (path.startsWith("/echo")) {
 			const query = path.split("/")[2];
-			const acceptEncoding = rawReq.split("Accept-Encoding: ")[1]?.split("\r\n")[0]?.split(", ")?.filter(accept => ALLOWED_ENCODING.includes(accept));
-			if(acceptEncoding?.length !== 0) {
-				socket.write(econdingResponse(query, 'gzip'))
+			const acceptEncoding = rawReq
+				.split("Accept-Encoding: ")[1]
+				?.split("\r\n")[0]
+				?.split(", ") 
+				?.filter((accept) => ALLOWED_ENCODING.includes(accept));
+			if (acceptEncoding?.length !== 0) {
+				socket.write(econdingResponse(query, "gzip"));
 			} else {
 				socket.write(textResponse(query));
 			}
@@ -47,7 +51,7 @@ const server = net.createServer((socket) => {
 				const fullPath = `${dir}/${fileName}`;
 				if (method == "POST") {
 					const body = data.toString().split("\r\n\r\n")[1];
-					fs.writeFileSync(fullPath, body, 'utf8');
+					fs.writeFileSync(fullPath, body, "utf8");
 					socket.write(CREATED);
 				} else {
 					const data = fs.readFileSync(`${dir}/${fileName}`);
