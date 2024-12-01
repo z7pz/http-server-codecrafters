@@ -13,9 +13,13 @@ const server = net.createServer((socket) => {
 		const path = rawReq.split(" ")[1];
 		if (path.startsWith("/echo")) {
 			const query = path.split("/")[2];
-
 			socket.write(
 				`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${query.length}\r\n\r\n${query}`
+			);
+		} else if (path.startsWith("/user-agent")) {
+			const userAgent = rawReq.split("User-Agent: ")[1].split("\r\n")[0];
+			socket.write(
+				`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`
 			);
 		} else {
 			const res = path == "/" ? OK : NOT_FOUND;
