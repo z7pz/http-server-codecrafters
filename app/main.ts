@@ -37,7 +37,8 @@ const server = net.createServer((socket) => {
 				?.split("\r\n")[0]
 				?.split(", ")  
 				?.filter((accept) => ALLOWED_ENCODING.includes(accept));
-			if (acceptEncoding?.length !== 0) {
+			if (acceptEncoding && acceptEncoding.length !== 0) {
+				console.log(query, acceptEncoding)
 				const buffer = Buffer.from(query, 'utf-8');
 				const zipped = zlib.gzipSync(new Uint8Array(buffer));
 				socket.write(econdingResponse(zipped, "gzip"));
