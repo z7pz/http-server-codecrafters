@@ -21,7 +21,7 @@ const server = net.createServer((socket) => {
 			socket.write(
 				`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${userAgent.length}\r\n\r\n${userAgent}`
 			);
-		} else {
+		} else { 
 			const res = path == "/" ? OK : NOT_FOUND;
 			socket.write(res);
 		}
