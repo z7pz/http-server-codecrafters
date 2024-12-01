@@ -11,6 +11,10 @@ function textResponse(content: string) {
 	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
 
+function octetStreamResponse(content: string) {
+	return `HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
+}
+
 // Uncomment this to pass the first stage
 const server = net.createServer((socket) => {
 	socket.on("data", (data) => {
@@ -29,7 +33,7 @@ const server = net.createServer((socket) => {
 			const dir = process.argv.slice(2);
 			try {
 				const data = fs.readFileSync(`${dir}/${fileName}`);
-				socket.write(textResponse(data.toString()));
+				socket.write(octetStreamResponse(data.toString()));
 			} catch (err) {
 				socket.write(NOT_FOUND);
 			}
