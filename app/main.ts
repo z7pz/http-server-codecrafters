@@ -30,9 +30,9 @@ const server = net.createServer((socket) => {
 			);
 		} else if (path.startsWith("/files")) {
 			const fileName = path.split("/").slice(2);
-			const dir = process.argv.slice(2);
+			const dir = process.argv.slice(2).join("/").toString().replace("/", "");
 			try {
-				const data = fs.readFileSync(`${dir.slice(1, dir.length - 1)}/${fileName}`);
+				const data = fs.readFileSync(`${dir}/${fileName}`);
 				socket.write(octetStreamResponse(data.toString()));
 			} catch (err) {
 				socket.write(NOT_FOUND);
