@@ -12,7 +12,7 @@ const server = net.createServer((socket) => {
 	socket.on("data", (data) => {
 		const rawReq = data.toString();
 		const path = rawReq.split(" ")[1];
-		const res = path == "/" ? OK : NOT_FOUND;
+		const res = path !== "/" ? OK : NOT_FOUND;
 		socket.write(res);
 		socket.end();
 	})
