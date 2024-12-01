@@ -11,13 +11,16 @@ const server = net.createServer((socket) => {
 	socket.on("data", (data) => {
 		const rawReq = data.toString();
 		const path = rawReq.split(" ")[1];
-		if(path.startsWith("/echo")) {
-			const str = path.split("/")[2];
-			console.log(str);
+		if (path.startsWith("/echo")) {
+			const query = path.split("/")[2];
+
+			socket.write(
+				`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${query.length}\r\n\r\n${query}`
+			);
+		} else {
+			const res = path == "/" ? OK : NOT_FOUND;
+			socket.write(res);
 		}
-		const res = path == "/" ? OK : NOT_FOUND;
-		console.log(path, res);
-		socket.write(res);
 		socket.end();
 	});
 	socket.on("close", () => {
