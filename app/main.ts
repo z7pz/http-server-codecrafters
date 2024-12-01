@@ -12,7 +12,7 @@ function textResponse(content: string) {
 	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
 function econdingResponse(content: string, type: string) {
-	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: type\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
+	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${type}\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
 
 function octetStreamResponse(content: string) {
