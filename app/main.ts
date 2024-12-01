@@ -34,7 +34,7 @@ const server = net.createServer((socket) => {
 			const dir = process.argv.slice(3).join("/").toString().replace("/", "");
 			console.log(dir)
 			try {
-				const data = fs.readFileSync(`${dir}/${fileName}`);
+				const data = fs.readFileSync(`/${dir}/${fileName}`);
 				socket.write(octetStreamResponse(data.toString()));
 			} catch (err) {
 				socket.write(NOT_FOUND);
