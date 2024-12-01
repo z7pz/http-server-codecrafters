@@ -13,10 +13,9 @@ console.log("Logs from your program will appear here!");
 function textResponse(content: string) {
 	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
-function econdingResponse(content: string, type: string) {
-	const buffer = Buffer.from(content, 'utf-8');
-	const zipped = zlib.gzipSync(new Uint8Array(buffer));
-	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${type}\r\nContent-Length: ${zipped.length}\r\n\r\n${zipped}`;
+function econdingResponse(buff: Buffer, type: string) {
+
+	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${type}\r\nContent-Length: ${buff.length}\r\n\r\n`;
 }
 
 function octetStreamResponse(content: string) {
@@ -39,7 +38,10 @@ const server = net.createServer((socket) => {
 				?.split(", ")  
 				?.filter((accept) => ALLOWED_ENCODING.includes(accept));
 			if (acceptEncoding?.length !== 0) {
-				socket.write(econdingResponse(query, "gzip"));
+				const buffer = Buffer.from(query, 'utf-8');
+				const zipped = zlib.gzipSync(new Uint8Array(buffer));
+				socket.write(econdingResponse(zipped, "gzip"));
+				socket.write(new Uint8Array(zipped));
 			} else {
 				socket.write(textResponse(query));
 			}
