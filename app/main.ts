@@ -30,8 +30,8 @@ const server = net.createServer((socket) => {
 		if (path.startsWith("/echo")) {
 			const query = path.split("/")[2];
 			const acceptEncoding = rawReq.split("Accept-Encoding: ")[1]?.split("\r\n")[0].split(", ").filter(accept => AllowedEncoding.includes(accept));
-			if(acceptEncoding) {
-				socket.write(econdingResponse(query, acceptEncoding))
+			if(acceptEncoding.length !== 0) {
+				socket.write(econdingResponse(query, 'gzip'))
 			} else {
 				socket.write(textResponse(query));
 			}
