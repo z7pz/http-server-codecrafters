@@ -11,6 +11,10 @@ const server = net.createServer((socket) => {
 	socket.on("data", (data) => {
 		const rawReq = data.toString();
 		const path = rawReq.split(" ")[1];
+		if(path.startsWith("/echo")) {
+			const str = path.split("/")[2];
+			console.log(str);
+		}
 		const res = path == "/" ? OK : NOT_FOUND;
 		console.log(path, res);
 		socket.write(res);
