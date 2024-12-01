@@ -1,5 +1,7 @@
 import net from "net";
 import fs from "node:fs";
+import zlib from 'zlib';
+
 
 const OK = "HTTP/1.1 200 OK\r\n\r\n";
 const CREATED = "HTTP/1.1 201 Created\r\n\r\n";
@@ -12,7 +14,9 @@ function textResponse(content: string) {
 	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
 }
 function econdingResponse(content: string, type: string) {
-	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${type}\r\nContent-Length: ${content.length}\r\n\r\n${content}`;
+	const buffer = Buffer.from(content, 'utf-8');
+	const zipped = zlib.gzipSync(new Uint8Array(buffer));
+	return `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Encoding: ${type}\r\nContent-Length: ${zipped.length}\r\n\r\n${zipped}`;
 }
 
 function octetStreamResponse(content: string) {
